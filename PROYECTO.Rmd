@@ -1,0 +1,480 @@
+```{r}
+# cargamos datos
+datos <- read.csv("Data.csv")
+
+##ver el dataframe
+datos
+
+```
+## CARGAMOS LIBRERIAS
+```{r}
+
+library(knitr)
+library(dplyr)
+```
+## VEMOS TODAS LAS COLUMNAS ALINEADAS
+```{r}
+kable(datos)
+```
+##eliminar filas con valores desconocidos
+```{r}
+datos <- datos[complete.cases(datos),]
+```
+## ver columnas y alinearlas
+```{r}
+kable(datos)
+```
+## ver columnas y alinearlas
+```{r}
+names(datos)
+```
+## enseñar las 5 primeras filas en formato kable
+```{r}
+head(datos, 5) %>% kable()
+```
+
+
+
+```{r load_dplyr}
+library(dplyr)
+```
+## PONER Player.Names COMO PRIMERA COLUMNA
+```{r}
+datos <- datos %>% select(Player.Names, everything())
+head(datos, 5) %>% kable()
+
+```
+```{r display_updated_dataframe1}
+head(datos, 5) %>% kable()
+```
+# CONVERTIMOS TODAS LAS VARIANTES DE LAS LIGAS FRANCESAS EN UNA SOLA
+```{r}
+library(dplyr)
+
+## Crear una lista con las ligas a cambiar
+ligas <- c("France Ligue 1", "France Ligue 2", "France Ligue 3", "France Ligue 4", "France Ligue 5", 
+           "France Ligue 6", "France Ligue 7", "France Ligue 8", "France Ligue 9", "France Ligue 10", 
+           "France Ligue 11", "France Ligue 12", "France Ligue 13", "France Ligue 14", "France Ligue 15", 
+           "France Ligue 16", "France Ligue 17", "France Ligue 18", "France Ligue 19", "France Ligue 20")
+# Recodificar las ligas
+datos$League <- replace(
+  datos$League, 
+  datos$League %in% ligas, 
+  "Liga Francesa"
+)
+
+# Verificar si las ligas fueron recodificadas correctamente
+table(datos$League)
+
+```
+
+
+## ENSEÑAMOS LAS DIFERENTES VARIABLES
+```{r show_column_names}
+colnames(datos)
+```
+
+## NUEVA VARIABLE QUE REPRESENTA EL NUMERO DE GOLES X MINUTO DE CADA JUGADOR
+```{r}
+library(dplyr)
+
+datos <- datos %>%
+  mutate(Goals_per_Minute = Goals / Mins)
+```
+## NUEVA VARIABLE QUE INDICA SI UN JUGADOR ES "prolífico" SI TIENE UN PROMEDIO de xG POR PARTIDO MAYOR QUE 0.5:
+```{r}
+datos <- datos %>%
+  mutate(Prolific_Player = xG.Per.Avg.Match > 0.5)
+```
+## NUEVA COLUMNA QUE REPRESENTE EN NUMERO DE TIRO A PUERTA 
+```{r}
+datos <- datos %>%
+  mutate(On_Target_Ratio = OnTarget / Shots)
+```
+## NUEVA COLUMNA QUE INDIQUE SI UN JUGADOR HA JUGADO EN MAS DE LA MITAD DE LOS PARTIDOS EN UNA TEMPORADA
+```{r}
+datos <- datos %>%
+  mutate(Mostly_Played = Matches_Played > (Matches_Played + Substitution) / 2)
+head(datos, ) %>% kable()
+```
+## FILTRAMOS MAYORES GOLEADORES DE LA LIGA INGLESA
+```{r}
+datos_filtered <- datos %>%
+  filter(Goals > 15, League == "Premier League")
+head(datos_filtered, 5) %>% kable()
+```
+
+## JUGADORES EN FRANCIA CON MAS PARTIDOS JUGADOS 
+```{r}
+datos_filtered <- datos %>%
+  filter(Matches_Played >= 30, Country != "Germany")
+head(datos_filtered, 5) %>% kable()
+```
+## CALCULO DE LA TABLA DE FRECUENCIAS SIMPLES PARA LA VARIABLE CUALITATIVA "Country"
+```{r show_table_html}
+tabla_frecuencias_simple <- datos %>%
+  count(Country) %>%
+  rename(Frequency = n) %>%
+  arrange(desc(Frequency))
+
+tabla_frecuencias_simple
+```
+
+## PARA LA VARIABLE LIGA
+```{r}
+# Frecuencia simple
+freq_simple <- table(datos$League)
+print(freq_simple)
+```
+##
+
+```{r}
+# Cargar las librerias necesarias
+library(dplyr)
+
+# Variables cuantitativas
+cuantitativas <- c('Matches_Played', 'Mins', 'Goals', 'xG', 'Shots', 'OnTarget')
+
+# Calcular estadísticos para variables cuantitativas
+datos %>%
+  summarise(across(cuantitativas, list(mean = mean, sd = sd, median = median, min = min, max = max), .names = "{.col}_{.fn}"))
+
+# Variables cualitativas
+cualitativas <- c('League', 'Club', 'Country')
+
+# Calcular estadísticos para variables cualitativas
+for (variable in cualitativas) {
+  print(table(datos[[variable]]))
+}
+```
+
+## Diagrama de barras de la media de goles por liga
+ Este gráfico representa las medias de goles de las diferentes ligas.  La altura de cada barra indica la media de goles anotados en cada liga. Si la altura de la barra para una liga específica es alta, esto significa que esa liga tiene una alta media de goles. Esto puede ser indicativo de varias cosas,  como una fuerte ofensiva en los equipos de esa liga, o defensas más débiles que permiten más goles
+
+```{r bar_plot}
+# Carga las bibliotecas necesarias
+library(ggplot2)
+library(dplyr)
+
+# Calcula la media de goles por liga
+goles_por_liga <- datos %>%
+  group_by(League) %>%
+  summarise(mean_goals = mean(Goals, na.rm = TRUE))
+
+# Crea el diagrama de barras
+ggplot(goles_por_liga, aes(x = League, y = mean_goals)) +
+  geom_bar(stat = 'identity') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Media de goles por liga", x = "Liga", y = "Media de goles")
+
+```
+
+## EXPLICACION DIAGRAMA BARRAS
+##Este gráfico representa las medias de goles de las diferentes ligas. La altura de cada barra indica la media de goles anotados en cada liga. Si la altura de la barra para una liga específica es alta, esto significa que esa liga tiene una alta media de goles. Esto puede ser indicativo de varias cosas, 
+#como una fuerte ofensiva en los equipos de esa liga, o defensas más débiles que permiten más goles
+
+
+```{r}
+# Crea el diagrama de barras agrupado
+ggplot(datos, aes(x = League, y = Goals, fill = Player.Names)) +
+  geom_bar(stat = 'identity', position = 'dodge') +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(title = "Media de goles por jugador en cada liga", x = "Liga", y = "Media de goles", fill = "Jugador")
+```
+
+## EXPLICACION DIAGRAMA
+Este gráfico representa la media de goles por jugador dentro de cada liga. Aquí, cada conjunto de barras corresponde a una liga, y cada barra dentro de ese conjunto corresponde a un jugador. La altura de la barra representa la media de goles de ese jugador.Si un jugador tiene una barra alta, esto indica que tiene una alta media de goles. Si un conjunto de barras (es decir, una liga) tiene varias barras altas, esto puede sugerir que esa liga tiene una serie de jugadores fuertes en términos de anotación de goles
+# HISTOGRAMA DE Tiros
+```{r}
+# Carga la librería ggplot2
+library(ggplot2)
+
+# Genera el histograma de la variable 'Shots'
+ggplot(datos, aes(x=Shots)) +
+  geom_histogram(binwidth=1, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  labs(title="Histograma de Tiros", x="Tiros", y="Frecuencia") +
+  theme_minimal()
+
+```
+
+## Interpretación del histograma:
+
+El eje x representa el número de tiros y el eje y representa la frecuencia de cada conteo de tiros.En otras palabras, te indica cuántas veces un jugador ha realizado cierto número de tiros en el conjunto de datos.
+
+
+## HISTOGRAMA DE GOLES
+```{r}
+# Carga la librería ggplot2
+library(ggplot2)
+
+# Genera el histograma de la variable 'Goals'
+ggplot(datos, aes(x=Goals)) +
+  geom_histogram(binwidth=1, fill="#69b3a2", color="#e9ecef", alpha=0.9) +
+  labs(title="Histograma de Goles", x="Goles", y="Frecuencia") +
+  theme_minimal()
+```
+
+## Interpretación del histograma:
+
+
+Este histograma mostrará la distribución de la variable "Goals" (Goles). El eje x representa la cantidad de goles y el eje y representa la frecuencia, es decir, cuántas veces ocurre una cierta cantidad de goles en el conjunto de datos.
+
+
+
+## DIAGRAMA CAJA SIMPLES
+```{r}
+# Carga la librería ggplot2
+library(ggplot2)
+
+# Genera el boxplot
+ggplot(datos, aes(x = League, y = Mins)) +
+  geom_boxplot() +
+  labs(title = "Distribución de Minutos Jugados por Liga", x = "Liga", y = "Minutos Jugados") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+```
+
+## Interpretación del diagrama de caja:
+
+El diagrama de cajas te permite visualizar la distribución de los minutos jugados por liga.Cada caja muestra los cuartiles de los minutos jugados en una liga específica, con la línea en el medio de la caja que indica la mediana, es decir, el valor medio de los minutos jugados. Los bigotes se extienden desde la caja para abarcar el resto de la distribución,con excepción de los puntos que se consideran valores atípicos
+
+
+## DIAGRAMA CAJA AGRUPADO
+```{r}
+# Carga la librería ggplot2
+library(ggplot2)
+
+# Genera el boxplot
+ggplot(datos, aes(x = Country, y = Goals)) +
+  geom_boxplot() +
+  labs(title = "Distribución de Goles por País", x = "País", y = "Goles") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) 
+```
+
+## Interpretación del diagrama de caja:
+
+El diagrama de cajas te permite visualizar la distribución de los goles por país. Cada caja muestra los cuartiles de los goles en un país específico, con la línea en el medio de la caja que indica la mediana, es decir, el valor medio de los goles. 
+Los bigotes se extienden desde la caja para abarcar el resto de la distribución, con excepción de los puntos que se consideran valores atípicos.
+
+## DIAGRAMA AGRUPADO GOLES
+```{r}
+# Carga la librería ggplot2
+library(ggplot2)
+
+# Genera el boxplot
+ggplot(datos, aes(x = Country, y = Goals, fill = League)) +
+  geom_boxplot() +
+  labs(title = "Distribución de Goles por País y Liga", x = "País", y = "Goles") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  guides(fill=guide_legend(title="Liga"))
+```
+
+## Interpretación del diagrama de caja:
+Este gráfico muestra la distribución de los goles por país, pero además, cada caja está coloreada por la liga a la que pertenece el jugador. Así, puedes ver no solo cómo se distribuyen los goles en un país específico, sino también cómo se distribuyen dentro de cada liga.Las cajas dentro de cada país representan los cuartiles de los goles para cada liga. La línea en el medio de la caja es la mediana de los goles
+
+
+## Relación entre los "Goals" (Goles) y el "xG" (Expected Goals o Goles Esperados)
+```{r}
+# Cargar la libreria
+library(ggplot2)
+
+
+# Crear el modelo de regresion lineal
+modelo <- lm(Goals ~ xG, data = datos)
+
+# Mostrar el resumen del modelo
+summary(modelo)
+```
+
+## Interpretación del modelo de regresión lineal:
+
+Los coeficientes del modelo te dicen cómo cambia la variable dependiente con cada unidad de cambio en la variable independiente. El valor p te indica si el coeficiente es estadísticamente significativo. Si el valor p es menor que 0.05, puedes concluir que hay una relación significativa entre las variables.
+
+El estadístico F te indica si tu modelo es significativamente mejor que un modelo sin predictores. En otras palabras, si hay una relación significativa entre todas las variables independientes y la variable dependiente.
+
+El R-cuadrado te indica cuánta de la variabilidad en la variable dependiente es explicada por tu modelo. Un R-cuadrado de 1 significa que tu modelo explica toda la variabilidad, mientras que un R-cuadrado de 0 significa que tu modelo no explica ninguna de la variabilidad
+
+## Modelo de regresión lineal para cada Club
+```{r}
+# Aplicar la regresión lineal a cada Club
+modelos_club <- by(datos, datos$Club, function(df) lm(Shots ~ Goals, data = df))
+
+# Mostrar el resumen de los modelos
+lapply(modelos_club, summary)
+```
+
+## Interpretación de los modelos de regresión lineal:
+los coeficientes del modelo te dirán cómo cambia la variable dependiente ("Shots") con cada unidad de cambio en la variable independiente ("Goals") para cada Club. El valor p te indica si este cambio es estadísticamente significativo para cada Club.
+
+## Relación entre "Matches_Played" (Partidos Jugados) y "Goals" (Goles), agrupados por la "League" (Liga)
+```{r}
+# Aplicar la regresión lineal a cada Liga
+modelos_liga <- by(datos, datos$League, function(df) lm(Matches_Played ~ Goals, data = df))
+
+# Mostrar el resumen de los modelos
+lapply(modelos_liga, summary)
+
+```
+
+## Interpretación de los modelos de regresión lineal:
+Similar a los modelos anteriores, los coeficientes del modelo indican cómo cambia la variable dependiente ("Matches_Played") con cada unidad de cambio en la variable independiente ("Goals") para cada Liga. El valor p  indica si este cambio es estadísticamente significativo para cada Liga.
+
+El estadístico F y los valores R-cuadrados permiten entender qué tan bien el modelo se ajusta a los datos para cada Liga. Específicamente, el estadístico F indica si hay una relación significativa entre "Matches_Played" y "Goals" para cada Liga, y el valor R-cuadrado  indica cuánta de la variabilidad en "Matches_Played" es explicada por "Goals" para cada Liga
+
+## APLICACION REGRESION NO LINEAL 
+Vamos a tomar un ejemplo de un modelo polinómico cuadrático, que es un tipo de modelo no lineal.
+
+Supongamos que queremos modelar la relación entre los "Goals" y "Matches_Played" de manera no lineal, por ejemplo, podríamos usar un modelo cuadrático:
+  
+```{r}
+# Aplicar la regresión no lineal a los datos
+model_nl <- lm(Matches_Played ~ poly(Goals, 2), data = datos)
+
+# Mostrar el resumen del modelo
+summary(model_nl)
+```
+
+## PARA CADA LIGA
+```{r}
+# Aplicar la regresión no lineal a cada Liga
+modelos_nl_liga <- by(datos, datos$League, function(df) lm(Matches_Played ~ poly(Goals, 2), data = df))
+
+# Mostrar el resumen de los modelos
+lapply(modelos_nl_liga, summary)
+```
+
+## Interpretación del modelo de regresión no lineal:
+
+Los coeficientes del modelo representan los términos del polinomio. Por ejemplo, para un modelo cuadrático, los coeficientes representan el término constante, el término lineal y el término cuadrático. El valor p asociado a cada coeficiente indica si ese término es estadísticamente significativo en el modelo.
+
+El valor R-cuadrado en cada modelo representa la cantidad de variabilidad en "Matches_Played" que se puede explicar por el modelo no lineal para cada Liga. El estadístico F te permite entender si el modelo proporciona un mejor ajuste a los datos que un modelo que solo incluye el término constante
+
+
+## APLICACION DE LA REGRESION LOGISTICA
+```{r}
+model <- lm(Goals ~ Prolific_Player, data = datos)
+summary(model)
+# Crear un nuevo data frame con los datos de 'Prolific_Player' para los que queremos predecir 'Goals'
+new_data <- data.frame(Prolific_Player = c("TRUE", "FALSE"))
+new_data$Prolific_Player <- as.logical(new_data$Prolific_Player)
+
+
+# Hacer las predicciones
+predictions <- predict(model, newdata = new_data)
+
+
+# Imprimir las predicciones
+print(predictions)
+
+```
+
+## INTERPRETACCION DEL MODELO DE REGRESION 
+Este modelo de regresión lineal predice la cantidad de goles ("Goals") que un jugador puede marcar basado en si es un jugador prolífico ("Prolific_Player") o no. La variable "Prolific_Player" es una variable categórica que ha sido convertida en una variable lógica (verdadero/falso) para este análisis.
+
+## PREDICCION DE TIROS A PUERTA CON GOLES
+```{r}
+# Construyendo el modelo de regresión
+model2 <- lm(Goals ~ OnTarget, data = datos)
+summary(model2)
+
+# Creando un nuevo data frame con los datos 'OnTarget' para los que queremos predecir 'Goals'
+new_data2 <- data.frame(OnTarget = c(10, 20, 30))
+
+# Haciendo las predicciones
+predictions2 <- predict(model2, newdata = new_data2)
+
+# Imprimiendo las predicciones
+print(predictions2)
+```
+
+## INTERPRETACION DEL MODELO DE REGRESION
+Las predicciones generadas por este modelo (predictions2) son las estimaciones del número de goles que un jugador marcaría dada una cierta cantidad de tiros a portería. Específicamente, este modelo predice cuántos goles se marcarían si un jugador tiene 10, 20 o 30 tiros a portería
+
+## APLICACION DE LA REGRESION LOGISTICA
+```{r}
+library(ggplot2)
+
+ggplot(datos, aes(x=Mins, y=Goals)) +
+  geom_point() +
+  facet_wrap(~Country) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) +
+  labs(x="Minutes Played", y="Goals Scored", title="Goals vs Minutes Played by Country")
+
+```
+
+## INTERPRETACION DE LA GRAFICA
+La gráfica es un diagrama de dispersión que representa los "Goals" (goles) en función de los "Mins" (minutos jugados), y cada punto en la gráfica representa un jugador individual. Además, la gráfica se divide en múltiples paneles a través de la faceta "Country" (país), lo que significa que hay un diagrama de dispersión por país.
+
+Eje X - "Minutes Played" (Minutos Jugados): Representa el número total de minutos que un jugador ha jugado.
+
+Eje Y - "Goals Scored" (Goles Anotados): Representa el número total de goles que un jugador ha anotado.
+
+Facetas - "Country" (País): Cada panel representa un país diferente.
+
+## DIAGRAMA DE BARRAS CON FACETAS
+```{r}
+ggplot(datos, aes(x = Club)) +
+  geom_bar() +
+  facet_wrap(~Country) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(x = "Club", y = "Count", title = "Numero de jugadores de cada Pais")
+
+```
+
+## INTERPRETACION DE LA GRAFICA
+
+
+
+## HISTOGRAMA CON FACETAS
+```{r}
+ggplot(datos, aes(x = xG)) +
+  geom_histogram(binwidth = 5, fill = "blue", color = "black") +
+  facet_wrap(~League) +
+  labs(x = "Expectativa de Gol", y = "Count", title = "Distribución de la Expectativa de Gol por Liga")
+```
+
+## INTERPRETACION DEL HISTOGRAMA
+
+ El eje x representa la expectativa de gol (xG), y el eje y representa la cantidad de jugadores (Count) que caen en cada intervalo de expectativa de goL
+
+
+## COMPARACION DE LA  d obde una variable cuantitativa discreta con su distribución teórica a partir de sus percentiles
+
+```{r}
+# Carga las librerías necesarias
+library(ggplot2)
+
+# Crear el gráfico Q-Q para 'Shots'
+qqnorm(datos$Shots, ylab = "Shots")
+qqline(datos$Shots, col = "red") # Añade la línea de referencia
+
+# Cálculo de los percentiles observados
+observed_percentiles <- quantile(datos$Shots, probs = c(0.25, 0.5, 0.75))
+
+# Cálculo de los percentiles teóricos
+theoretical_percentiles <- qnorm(p = c(0.25, 0.5, 0.75), mean = mean(datos$Shots), sd = sd(datos$Shots))
+
+# Crear un dataframe para comparar los percentiles
+comparison <- data.frame(Observed = observed_percentiles, Theoretical = theoretical_percentiles)
+print(comparison)
+```
+
+## INTERPRETACION DEL GRAFICO
+El gráfico Q-Q muestra que los datos de "Shots" se ajustan a una distribución normal. Esto se confirma al comparar los percentiles observados con los percentiles teóricos. Los percentiles observados y teóricos son muy similares, lo que indica que los datos se ajustan a una distribución normal.
+
+## PIVOTAR DE FORMATO ANCHO A LARGO
+```{r}
+library(tidyverse)
+
+datos_largos <- datos %>%
+  pivot_longer(
+    cols = c(Matches_Played:Mostly_Played),
+    names_to = "Variable",
+    values_to = "Valor"
+  )
+head(datos_largos)
+
+
+```
+
+## INTERPRETACION DEL PIVOTEO
+ el resultado del pivote, cada una de esas variables se ha convertido en su propia fila para cada jugador en cada liga y año. La columna "Variable" indica qué variable se está midiendo (Matches_Played, Substitution, Mins, etc.) y la columna "Valor" indica el valor de esa variable
