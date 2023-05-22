@@ -26343,10 +26343,10 @@ head(datos_filtered, 5) %&gt;% kable()</code></pre>
 </tbody>
 </table>
 </div>
-<div id="jugadores-en-francia-con-mas-partidos-jugados" class="section level2">
-<h2>JUGADORES EN FRANCIA CON MAS PARTIDOS JUGADOS</h2>
+<div id="jugadores-en-españa-con-mas-partidos-jugados" class="section level2">
+<h2>JUGADORES EN ESPAÑA CON MAS PARTIDOS JUGADOS</h2>
 <pre class="r"><code>datos_filtered &lt;- datos %&gt;%
-  filter(Matches_Played &gt;= 30, Country != &quot;Germany&quot;)
+  filter(Matches_Played &gt;= 30, Country != &quot;Spain&quot;)
 head(datos_filtered, 5) %&gt;% kable()</code></pre>
 <table>
 <colgroup>
@@ -26366,8 +26366,8 @@ head(datos_filtered, 5) %&gt;% kable()</code></pre>
 <col width="10%" />
 <col width="2%" />
 <col width="7%" />
-<col width="6%" />
-<col width="6%" />
+<col width="7%" />
+<col width="7%" />
 <col width="6%" />
 </colgroup>
 <thead>
@@ -26395,108 +26395,108 @@ head(datos_filtered, 5) %&gt;% kable()</code></pre>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">Antoine Griezmann</td>
-<td align="left">Spain</td>
-<td align="left">La Liga</td>
-<td align="left">(BAR)</td>
-<td align="right">36</td>
-<td align="right">0</td>
-<td align="right">3129</td>
-<td align="right">16</td>
-<td align="right">11.86</td>
-<td align="right">0.36</td>
-<td align="right">88</td>
-<td align="right">41</td>
-<td align="right">2.67</td>
-<td align="right">1.24</td>
-<td align="right">2016</td>
-<td align="right">0.0051135</td>
-<td align="left">FALSE</td>
-<td align="right">0.4659091</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="even">
-<td align="left">Luis Suarez</td>
-<td align="left">Spain</td>
-<td align="left">La Liga</td>
-<td align="left">(ATL)</td>
-<td align="right">34</td>
+<td align="left">Ciro Immobile</td>
+<td align="left">Italy</td>
+<td align="left">Serie A</td>
+<td align="left">(LAZ)</td>
+<td align="right">35</td>
 <td align="right">1</td>
-<td align="right">2940</td>
-<td align="right">28</td>
-<td align="right">23.21</td>
-<td align="right">0.75</td>
-<td align="right">120</td>
-<td align="right">57</td>
-<td align="right">3.88</td>
-<td align="right">1.84</td>
+<td align="right">3294</td>
+<td align="right">22</td>
+<td align="right">19.76</td>
+<td align="right">0.57</td>
+<td align="right">136</td>
+<td align="right">98</td>
+<td align="right">3.92</td>
+<td align="right">2.83</td>
 <td align="right">2016</td>
-<td align="right">0.0095238</td>
+<td align="right">0.0066788</td>
 <td align="left">TRUE</td>
-<td align="right">0.4750000</td>
-<td align="left">TRUE</td>
-</tr>
-<tr class="odd">
-<td align="left">Ruben Castro</td>
-<td align="left">Spain</td>
-<td align="left">La Liga</td>
-<td align="left">(CAR)</td>
-<td align="right">32</td>
-<td align="right">3</td>
-<td align="right">2842</td>
-<td align="right">13</td>
-<td align="right">14.06</td>
-<td align="right">0.47</td>
-<td align="right">117</td>
-<td align="right">42</td>
-<td align="right">3.91</td>
-<td align="right">1.40</td>
-<td align="right">2016</td>
-<td align="right">0.0045742</td>
-<td align="left">FALSE</td>
-<td align="right">0.3589744</td>
+<td align="right">0.7205882</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="even">
-<td align="left">Neymar</td>
-<td align="left">Spain</td>
-<td align="left">La Liga</td>
-<td align="left">(PSG)</td>
-<td align="right">30</td>
+<td align="left">Alejandro Gomez</td>
+<td align="left">Italy</td>
+<td align="left">Serie A</td>
+<td align="left">(ATA)</td>
+<td align="right">37</td>
 <td align="right">0</td>
-<td align="right">2694</td>
-<td align="right">13</td>
-<td align="right">13.33</td>
-<td align="right">0.47</td>
-<td align="right">105</td>
-<td align="right">42</td>
-<td align="right">3.70</td>
-<td align="right">1.48</td>
+<td align="right">3247</td>
+<td align="right">16</td>
+<td align="right">11.62</td>
+<td align="right">0.34</td>
+<td align="right">117</td>
+<td align="right">75</td>
+<td align="right">3.42</td>
+<td align="right">2.19</td>
 <td align="right">2016</td>
-<td align="right">0.0048255</td>
+<td align="right">0.0049276</td>
 <td align="left">FALSE</td>
-<td align="right">0.4000000</td>
+<td align="right">0.6410256</td>
 <td align="left">TRUE</td>
 </tr>
 <tr class="odd">
-<td align="left">Sergi Enrich</td>
-<td align="left">Spain</td>
-<td align="left">La Liga</td>
-<td align="left">(EIB)</td>
-<td align="right">31</td>
-<td align="right">7</td>
-<td align="right">2904</td>
-<td align="right">11</td>
-<td align="right">8.25</td>
-<td align="right">0.27</td>
-<td align="right">64</td>
-<td align="right">26</td>
-<td align="right">2.09</td>
-<td align="right">0.85</td>
+<td align="left">Jose CallejOn</td>
+<td align="left">Italy</td>
+<td align="left">Serie A</td>
+<td align="left">(FIO)</td>
+<td align="right">37</td>
+<td align="right">0</td>
+<td align="right">3276</td>
+<td align="right">14</td>
+<td align="right">11.38</td>
+<td align="right">0.33</td>
+<td align="right">86</td>
+<td align="right">57</td>
+<td align="right">2.49</td>
+<td align="right">1.65</td>
 <td align="right">2016</td>
-<td align="right">0.0037879</td>
+<td align="right">0.0042735</td>
 <td align="left">FALSE</td>
-<td align="right">0.4062500</td>
+<td align="right">0.6627907</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="even">
+<td align="left">Iago Falque</td>
+<td align="left">Italy</td>
+<td align="left">Serie A</td>
+<td align="left">(BEN)</td>
+<td align="right">31</td>
+<td align="right">4</td>
+<td align="right">2633</td>
+<td align="right">12</td>
+<td align="right">8.04</td>
+<td align="right">0.29</td>
+<td align="right">65</td>
+<td align="right">42</td>
+<td align="right">2.35</td>
+<td align="right">1.52</td>
+<td align="right">2016</td>
+<td align="right">0.0045575</td>
+<td align="left">FALSE</td>
+<td align="right">0.6461538</td>
+<td align="left">TRUE</td>
+</tr>
+<tr class="odd">
+<td align="left">Mauro Icardi</td>
+<td align="left">Italy</td>
+<td align="left">Serie A</td>
+<td align="left">(PSG)</td>
+<td align="right">34</td>
+<td align="right">0</td>
+<td align="right">3188</td>
+<td align="right">24</td>
+<td align="right">19.13</td>
+<td align="right">0.57</td>
+<td align="right">109</td>
+<td align="right">52</td>
+<td align="right">3.25</td>
+<td align="right">1.55</td>
+<td align="right">2016</td>
+<td align="right">0.0075282</td>
+<td align="left">TRUE</td>
+<td align="right">0.4770642</td>
 <td align="left">TRUE</td>
 </tr>
 </tbody>
