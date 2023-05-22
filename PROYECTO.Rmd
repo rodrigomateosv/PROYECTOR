@@ -104,10 +104,10 @@ datos_filtered <- datos %>%
 head(datos_filtered, 5) %>% kable()
 ```
 
-## JUGADORES EN FRANCIA CON MAS PARTIDOS JUGADOS 
+## JUGADORES EN ESPAÑA CON MAS PARTIDOS JUGADOS 
 ```{r}
 datos_filtered <- datos %>%
-  filter(Matches_Played >= 30, Country != "Germany")
+  filter(Matches_Played >= 30, Country != "Spain")
 head(datos_filtered, 5) %>% kable()
 ```
 ## CALCULO DE LA TABLA DE FRECUENCIAS SIMPLES PARA LA VARIABLE CUALITATIVA "Country"
